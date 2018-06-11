@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
@@ -16,7 +18,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
     sourceSets.test.resources.srcDirs += ["src/main"]
+}
+
+androidExtensions {
+    experimental = true
 }
 
 dependencies {
@@ -33,4 +42,5 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'org.jsoup:jsoup:1.11.2'
 
+    implementation"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
