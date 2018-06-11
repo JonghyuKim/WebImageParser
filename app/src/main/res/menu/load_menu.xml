@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_file"
+        android:title="LoadFile" />
+
+    <item android:id="@+id/menu_web"
+        android:title="LoadCustomWeb" />
+
+    <item android:id="@+id/menu_jsoup"
+        android:title="LoadJsoup" />
+</menu>
