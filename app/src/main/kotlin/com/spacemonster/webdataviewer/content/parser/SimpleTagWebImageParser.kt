@@ -1,6 +1,7 @@
 package com.spacemonster.webdataviewer.content.parser
 
 import com.spacemonster.webdataviewer.content.data.WebImage
+import io.reactivex.Observable
 
 /**
  * Created by GE62 on 2017-12-23.
@@ -13,8 +14,19 @@ class SimpleTagWebImageParser(private val targetTag: String) : IDataParser<Strin
 
     private var isCommentContinue = false
 
+    override fun parse(dataList: List<String>): Observable<WebImage> {
+        return Observable.create{emitter ->
+            for(line in dataList){
+                parse(line)?.let {
+                    emitter.onNext(it)
+                }
+            }
+            emitter.onComplete()
+        }
 
-    override fun parse(line: String): WebImage? {
+    }
+
+    private fun parse(line: String): WebImage? {
 
         if (checkComment(line)) {
             return null

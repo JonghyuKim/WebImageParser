@@ -10,24 +10,15 @@ import com.spacemonster.webdataviewer.content.requester.WebDataRequester
 
 object InjectionDataProvider {
 
-    fun fileToSimpleTag(context: Context, tag: String): IDataProvider<String, WebImage> {
-        return DataProviderImpl<String, WebImage>(context).apply {
-            requester = FileDataRequester(context)
-            parser = SimpleTagWebImageParser(tag)
-        }
+    fun fileToSimpleTag(context: Context, tag: String, dataPath: String): IDataProvider<String, WebImage> {
+        return DataProviderImpl(FileDataRequester(context), SimpleTagWebImageParser(tag), dataPath)
     }
 
-    fun webToSimpleTag(context: Context, tag: String): IDataProvider<String, WebImage> {
-        return DataProviderImpl<String, WebImage>(context).apply {
-            requester = WebDataRequester(context)
-            parser = SimpleTagWebImageParser(tag)
-        }
+    fun webToSimpleTag(context: Context, tag: String, dataPath: String): IDataProvider<String, WebImage> {
+        return DataProviderImpl(WebDataRequester(context), SimpleTagWebImageParser(tag), dataPath)
     }
 
-    fun webToJsoup(context: Context): IDataProvider<String, WebImage> {
-        return DataProviderImpl<String, WebImage>(context).apply {
-            requester = WebDataRequester(context)
-            parser = JsoupWebImageParser()
-        }
+    fun webToJsoup(context: Context, dataPath: String): IDataProvider<String, WebImage> {
+        return DataProviderImpl(WebDataRequester(context), JsoupWebImageParser(), dataPath)
     }
 }
