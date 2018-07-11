@@ -6,6 +6,7 @@ import com.spacemonster.webdataviewer.content.data.WebImage
 import com.spacemonster.webdataviewer.content.parser.JsoupWebImageParser
 import com.spacemonster.webdataviewer.content.parser.SimpleTagWebImageParser
 import com.spacemonster.webdataviewer.content.requester.FileDataRequester
+import com.spacemonster.webdataviewer.content.requester.JsoupWebImageRequester
 import com.spacemonster.webdataviewer.content.requester.WebDataRequester
 
 object InjectionDataProvider {
@@ -19,6 +20,6 @@ object InjectionDataProvider {
     }
 
     fun webToJsoup(context: Context, dataPath: String): IDataProvider<String, WebImage> {
-        return DataProviderImpl(WebDataRequester(context), JsoupWebImageParser(), dataPath)
+        return DataProviderImpl(JsoupWebImageRequester(context), JsoupWebImageParser(), dataPath)
     }
 }

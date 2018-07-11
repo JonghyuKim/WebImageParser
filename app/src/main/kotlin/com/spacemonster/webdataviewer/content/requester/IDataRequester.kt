@@ -1,5 +1,8 @@
 package com.spacemonster.webdataviewer.content.requester
 
+import io.reactivex.Observable
+import java.util.*
+
 
 /**
  * Created by GE62 on 2017-12-26.
@@ -13,7 +16,7 @@ interface IDataRequester<T> {
      * @throws Exception
      */
     @Throws(Exception::class)
-    fun dataRequest(path: String): List<T>
+    fun dataRequest(path: String): Observable<T>
 
     fun release()
 }

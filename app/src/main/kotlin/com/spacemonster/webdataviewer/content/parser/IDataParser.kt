@@ -11,7 +11,7 @@ interface IDataParser<T, R> {
      * 파싱할 데이터를 입력받는다.
      * @param dataList
      */
-    fun parse(dataList: List<T>): Observable<R>
+    fun parse(dataList: Observable<T>): Observable<R>
 
     fun release()
 }

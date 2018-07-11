@@ -8,8 +8,8 @@ import io.reactivex.Observable
  */
 
 class JsoupWebImageParser : IDataParser<String, WebImage> {
-    override fun parse(dataList: List<String>): Observable<WebImage> {
-        return Observable.fromIterable(dataList).map { WebImage(it) }
+    override fun parse(dataList: Observable<String>): Observable<WebImage> {
+        return dataList.map { WebImage(it) }
     }
 
     override fun release() {}

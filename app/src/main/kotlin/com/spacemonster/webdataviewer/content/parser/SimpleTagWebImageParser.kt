@@ -1,7 +1,10 @@
 package com.spacemonster.webdataviewer.content.parser
 
+import android.util.Log
 import com.spacemonster.webdataviewer.content.data.WebImage
 import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
+import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by GE62 on 2017-12-23.
@@ -14,16 +17,25 @@ class SimpleTagWebImageParser(private val targetTag: String) : IDataParser<Strin
 
     private var isCommentContinue = false
 
-    override fun parse(dataList: List<String>): Observable<WebImage> {
-        return Observable.create{emitter ->
-            for(line in dataList){
-                parse(line)?.let {
-                    emitter.onNext(it)
-                }
-            }
-            emitter.onComplete()
-        }
+    override fun parse(dataList: Observable<String>): Observable<WebImage> {
 
+        val parseSubject = PublishSubject.create<WebImage>()
+
+        dataList.map {
+            parse(it) ?: run{
+                it
+            }
+        }.subscribe({
+            if(it is WebImage){
+                parseSubject.onNext(it)
+            }
+        },{
+            parseSubject.onError(it)
+        },{
+            parseSubject.onComplete()
+        })
+
+        return parseSubject
     }
 
     private fun parse(line: String): WebImage? {

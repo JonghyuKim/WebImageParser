@@ -49,32 +49,33 @@ class MainActivity : AppCompatActivity() {
             pb_progressbar.visibility = View.VISIBLE
         }
 
-        compositDisposable += dataProviderSource.doOnNext {
-                    Log.d(LOG_TAG, "dataCreate Start!")
-                    dataList.clear()
-                }
-                .flatMap {
-                    it.createData()
-                }
-                .observeOn(AndroidSchedulers.mainThread())
+        val createDataSource = dataProviderSource.doOnNext {
+            Log.d(LOG_TAG, "dataCreate Start!1")
+            dataList.clear()
+            dataListAdapter.notifyDataSetChanged()
+        }.observeOn(Schedulers.io())
+         .flatMap {
+             it.createData()
+         }
+
+        compositDisposable += createDataSource.observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete { Log.d("hyuhyu", "complite call!!!!!") }
                 .subscribe({
                     Log.d(LOG_TAG, "addData ${dataList.size}")
                     dataList.add(it!!)
-                    dataListAdapter.notifyItemInserted(dataList.size - 1)
                 }
-                        ,{
-                    Log.e(LOG_TAG, "DataLoadError! ${Log.getStackTraceString(it)}")
-
-                    dataListAdapter.notifyDataSetChanged()
-                    pb_progressbar.visibility = View.INVISIBLE
-                    Toast.makeText(baseContext, "Load Error", Toast.LENGTH_SHORT).show()}
                 ,{
-                    Log.d(LOG_TAG, "dataCreate finish! ${dataList.size}")
-                    dataListAdapter.notifyDataSetChanged()
-                    pb_progressbar.visibility = View.INVISIBLE
-                    Toast.makeText(baseContext, "Load finish!", Toast.LENGTH_SHORT).show()
-                })
+            Log.e(LOG_TAG, "DataLoadError! ${Log.getStackTraceString(it)}")
 
+            dataListAdapter.notifyDataSetChanged()
+            pb_progressbar.visibility = View.INVISIBLE
+            Toast.makeText(baseContext, "Load Error", Toast.LENGTH_SHORT).show()}
+                ,{
+            Log.d(LOG_TAG, "dataCreate finish! ${dataList.size}")
+            dataListAdapter.notifyDataSetChanged()
+            pb_progressbar.visibility = View.INVISIBLE
+            Toast.makeText(baseContext, "Load finish!", Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

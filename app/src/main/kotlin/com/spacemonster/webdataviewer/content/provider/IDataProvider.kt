@@ -20,7 +20,7 @@ interface IDataProvider<T,R> {
     /**
      * 데이터 생성을 요청한다
      */
-    fun createData() : Observable<R?>
+    fun createData() : Observable<R>
 
     fun release()
 }

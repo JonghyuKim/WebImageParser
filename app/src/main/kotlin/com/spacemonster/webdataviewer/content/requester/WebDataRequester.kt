@@ -1,6 +1,7 @@
 package com.spacemonster.webdataviewer.content.requester
 
 import android.content.Context
+import io.reactivex.Observable
 
 import java.io.BufferedReader
 import java.io.IOException
@@ -20,36 +21,27 @@ class WebDataRequester(context: Context) : IDataRequester<String> {
 
     private var isReleased = false
 
-    internal var dataList: MutableList<String> = ArrayList()
-
     @Throws(ProtocolException::class, MalformedURLException::class, IOException::class)
-    override fun dataRequest(path: String): List<String> {
-        val url: URL
-        val conn: HttpURLConnection
-        var rd: BufferedReader? = null
-
-        dataList.clear()
-
-        isReleased = false
-
-        try {
-            url = URL(path)
-            conn = url.openConnection() as HttpURLConnection
-            conn.requestMethod = "GET"
-            rd = BufferedReader(InputStreamReader(conn.inputStream))
-            while (isReleased) {
-                rd.readLine()?.run{
-                    dataList.add(this)
-                } ?: break
+    override fun dataRequest(path: String): Observable<String> {
+        return Observable.create{
+            var rd : BufferedReader? = null
+            try {
+                val conn = URL(path).openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                rd = BufferedReader(InputStreamReader(conn.inputStream))
+                while (!isReleased) {
+                    rd.readLine()?.run{
+                        it.onNext(this)
+                    } ?: break
+                    it.onComplete()
+                }
+            } finally {
+                rd?.close()
             }
-        } finally {
-            rd?.close()
         }
-        return dataList
     }
 
     override fun release() {
-        dataList.clear()
         isReleased = true
     }
 
